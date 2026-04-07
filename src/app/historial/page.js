@@ -122,3 +122,4 @@ export default function Historial() {
     </main>
   );
 }
+// Actualización de ruta
