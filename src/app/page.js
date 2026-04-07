@@ -32,105 +32,96 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] p-4 md:p-8 text-slate-900 font-sans">
-      <div className="max-w-2xl mx-auto">
+    <main className="min-h-screen bg-slate-50 p-6 md:p-12 font-sans flex justify-center items-start">
+      <div className="max-w-2xl w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl p-8 md:p-10 border border-slate-100">
         
-        {/* Header con navegación rápida */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-              ScoutFlow <span className="text-blue-600">IA</span>
-            </h1>
-            <p className="text-slate-600 font-medium">Diagnóstico y propuesta digital inmediata</p>
+        <header className="mb-10 text-left">
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+            ScoutFlow <span className="text-blue-600">IA</span>
+          </h1>
+          <p className="text-slate-600 font-medium text-lg mt-1">
+            Simulador de diagnóstico y propuesta digital
+          </p>
+          <div className="h-1 w-20 bg-blue-600 mt-4 rounded-full"></div>
+        </header>
+
+        <form onSubmit={enviarAN8N} className="space-y-8">
+          <div className="space-y-6">
+            {/* Campo: Área */}
+            <div>
+              <label className="block text-sm font-bold text-slate-800 mb-2 tracking-wide">
+                Área afectada
+              </label>
+              <input 
+                required 
+                type="text" 
+                className="w-full p-4 bg-white border-2 border-slate-100 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-slate-900 font-semibold placeholder:text-slate-500 placeholder:font-normal" 
+                placeholder="Ej: Almacén, Ventas, RRHH"
+                onChange={(e) => setFormData({...formData, area: e.target.value})} 
+              />
+            </div>
+
+            {/* Campo: Contexto */}
+            <div>
+              <label className="block text-sm font-bold text-slate-800 mb-2 tracking-wide">
+                Contexto del problema
+              </label>
+              <textarea 
+                required 
+                className="w-full p-4 bg-white border-2 border-slate-100 rounded-xl h-32 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-slate-900 font-semibold placeholder:text-slate-500 placeholder:font-normal resize-none" 
+                placeholder="Describe qué está pasando..."
+                onChange={(e) => setFormData({...formData, contexto: e.target.value})} 
+              />
+            </div>
+
+            {/* Campo: Impacto */}
+            <div>
+              <label className="block text-sm font-bold text-slate-800 mb-2 tracking-wide">
+                Impacto u Obstáculos
+              </label>
+              <input 
+                type="text" 
+                className="w-full p-4 bg-white border-2 border-slate-100 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-slate-900 font-semibold placeholder:text-slate-500 placeholder:font-normal" 
+                placeholder="¿Cómo afecta esto a la empresa?"
+                onChange={(e) => setFormData({...formData, impacto: e.target.value})} 
+              />
+            </div>
           </div>
-          <a href="/historial" className="text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors">
-            Ver Historial →
+
+          <button 
+            type="submit" 
+            disabled={cargando}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-5 rounded-2xl transition-all duration-300 shadow-xl shadow-blue-200 disabled:bg-slate-300 text-lg"
+          >
+            {cargando ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Procesando datos...
+              </span>
+            ) : "Generar Diagnóstico Digital"}
+          </button>
+        </form>
+
+        {resultado && (
+          <div className="mt-10 p-6 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 animate-in fade-in zoom-in duration-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="h-3 w-3 bg-green-400 rounded-full animate-pulse"></div>
+              <h2 className="text-white font-bold text-lg">Análisis de IA Finalizado</h2>
+            </div>
+            <pre className="text-slate-300 text-sm overflow-x-auto font-mono bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+              {JSON.stringify(resultado, null, 2)}
+            </pre>
+          </div>
+        )}
+
+        <footer className="mt-8 text-center">
+          <a href="/historial" className="text-slate-400 hover:text-blue-600 font-bold text-sm transition-all uppercase tracking-widest">
+            Ir al historial de casos →
           </a>
-        </div>
-
-        <div className="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-8 border border-slate-200">
-          <form onSubmit={enviarAN8N} className="space-y-6">
-            <div className="grid grid-cols-1 gap-6">
-              {/* Campo: Área */}
-              <div>
-                <label className="block text-sm font-bold text-slate-800 mb-2 uppercase tracking-wide">
-                  Área afectada
-                </label>
-                <input 
-                  required 
-                  type="text" 
-                  className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-900 font-medium placeholder:text-slate-400" 
-                  placeholder="Ej: Almacén, Producción, Logística"
-                  onChange={(e) => setFormData({...formData, area: e.target.value})} 
-                />
-              </div>
-
-              {/* Campo: Contexto */}
-              <div>
-                <label className="block text-sm font-bold text-slate-800 mb-2 uppercase tracking-wide">
-                  Contexto del problema
-                </label>
-                <textarea 
-                  required 
-                  className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl h-32 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-900 font-medium placeholder:text-slate-400" 
-                  placeholder="Describe detalladamente qué está ocurriendo..."
-                  onChange={(e) => setFormData({...formData, contexto: e.target.value})} 
-                />
-              </div>
-
-              {/* Campo: Impacto */}
-              <div>
-                <label className="block text-sm font-bold text-slate-800 mb-2 uppercase tracking-wide">
-                  Impacto u Obstáculos
-                </label>
-                <input 
-                  type="text" 
-                  className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-900 font-medium placeholder:text-slate-400" 
-                  placeholder="¿Cómo afecta esto la productividad o los costos?"
-                  onChange={(e) => setFormData({...formData, impacto: e.target.value})} 
-                />
-              </div>
-            </div>
-
-            {/* Botón Principal */}
-            <button 
-              type="submit" 
-              disabled={cargando}
-              className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-5 rounded-2xl transition-all duration-300 shadow-xl shadow-blue-900/10 disabled:bg-slate-300 flex items-center justify-center gap-3 uppercase tracking-widest text-sm"
-            >
-              {cargando ? (
-                <>
-                  <div className="h-5 w-5 border-2 border-white/30 border-t-white animate-spin rounded-full"></div>
-                  Analizando...
-                </>
-              ) : (
-                "Generar Diagnóstico Digital"
-              )}
-            </button>
-          </form>
-
-          {/* Resultado Mejorado */}
-          {resultado && (
-            <div className="mt-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="bg-blue-50/50 border-2 border-blue-100 rounded-2xl p-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                  <svg className="w-20 h-20 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L1 21h22L12 2zm0 3.45L19.53 19H4.47L12 5.45zM11 16h2v2h-2v-2zm0-7h2v5h-2V9z"/>
-                  </svg>
-                </div>
-                <h2 className="text-xl font-black text-blue-900 mb-4 flex items-center gap-2">
-                  <span className="w-2 h-6 bg-blue-600 rounded-full"></span>
-                  Propuesta Generada
-                </h2>
-                <div className="bg-white/80 backdrop-blur-sm border border-blue-100 rounded-lg p-4">
-                  <pre className="text-sm text-slate-800 whitespace-pre-wrap font-mono leading-relaxed">
-                    {JSON.stringify(resultado, null, 2)}
-                  </pre>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        </footer>
       </div>
     </main>
   );
