@@ -10,7 +10,7 @@ export default function Historial() {
   const cargarDatos = async () => {
     try {
       // Sustituye con tu URL de n8n que consulta Supabase
-      const response = await fetch('TU_URL_DE_N8N_PARA_CONSULTAR');
+      const response = await fetch('https://cs7.app.n8n.cloud/webhook-test/obtener-casos');
       const data = await response.json();
       setCasos(Array.isArray(data) ? data : [data]);
     } catch (error) {
