@@ -8,7 +8,7 @@ export default function Historial() {
   const cargarDatos = async () => {
     try {
       // CORRECCIÓN: Usar el webhook de OBTENER, no el de NUEVO
-      const response = await fetch('https://cs7.app.n8n.cloud/webhook/obtener-casos');
+      const response = await fetch('https://cs7.app.n8n.cloud/webhook-test/obtener-casos');
       const data = await response.json();
       
       // Normalizar datos: n8n a veces envía un objeto o un array
