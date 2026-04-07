@@ -16,7 +16,7 @@ export default function Home() {
     setCargando(true);
     
     try {
-      const response = await fetch('https://cs7.app.n8n.cloud/webhook-test/nuevo-caso', {
+      const response = await fetch('https://cs7.app.n8n.cloud/webhook/nuevo-caso', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
