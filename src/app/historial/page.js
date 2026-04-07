@@ -7,11 +7,27 @@ export default function Historial() {
   
   const cargarDatos = async () => {
     try {
-      const response = await fetch('https://cs7.app.n8n.cloud/webhook/nuevo-caso');
+      // CORRECCIÓN: Usar el webhook de OBTENER, no el de NUEVO
+      const response = await fetch('https://cs7.app.n8n.cloud/webhook/obtener-casos');
       const data = await response.json();
-      setCasos(Array.isArray(data) ? data : [data]);
+      
+      // Normalizar datos: n8n a veces envía un objeto o un array
+      const datosNormalizados = Array.isArray(data) ? data : [data];
+      
+      // Procesar los campos JSON que vienen como string de Supabase
+      const datosProcesados = datosNormalizados.map(caso => ({
+        ...caso,
+        diagnostico_ia: typeof caso.diagnostico_ia === 'string' 
+          ? JSON.parse(caso.diagnostico_ia) 
+          : caso.diagnostico_ia,
+        propuesta_digital: typeof caso.propuesta_digital === 'string' 
+          ? JSON.parse(caso.propuesta_digital) 
+          : caso.propuesta_digital
+      }));
+
+      setCasos(datosProcesados);
     } catch (error) {
-      console.error("Error al cargar:", error);
+      console.error("Error al cargar datos de historial:", error);
     } finally {
       setCargando(false);
     }
@@ -24,7 +40,6 @@ export default function Historial() {
   return (
     <main className="min-h-screen bg-[#f8fafc] p-4 md:p-8 text-slate-900 font-sans">
       <div className="max-w-6xl mx-auto">
-        {/* Header con enlace mejorado */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
           <div>
             <h1 className="text-4xl font-black text-slate-900 tracking-tight">
@@ -63,7 +78,7 @@ export default function Historial() {
                     <tr key={i} className="hover:bg-blue-50/40 transition-colors group">
                       <td className="p-5">
                         <div className="font-bold text-slate-900">{caso.area_afectada || "General"}</div>
-                        <div className="text-[11px] text-slate-500 font-medium uppercase mt-0.5">ID: {i + 100}</div>
+                        <div className="text-[11px] text-slate-500 font-medium uppercase mt-0.5">ID: {caso.id || i + 100}</div>
                       </td>
                       <td className="p-5">
                         <span className={`inline-flex items-center px-3 py-1 rounded-md text-[11px] font-black uppercase tracking-wider ${
@@ -76,7 +91,6 @@ export default function Historial() {
                         </span>
                       </td>
                       <td className="p-5">
-                        {/* Texto gris fuerte mejorado */}
                         <p className="text-slate-700 font-medium leading-relaxed max-w-xs line-clamp-2">
                           {caso.propuesta_digital?.nombre_solucion || "Pendiente de revisión"}
                         </p>
