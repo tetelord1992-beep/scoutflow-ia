@@ -7,7 +7,7 @@ export default function Historial() {
   
   const cargarDatos = async () => {
     try {
-      const response = await fetch('https://cs7.app.n8n.cloud/webhook-test/obtener-casos');
+      const response = await fetch('https://cs7.app.n8n.cloud/webhook/nuevo-caso');
       const data = await response.json();
       setCasos(Array.isArray(data) ? data : [data]);
     } catch (error) {
